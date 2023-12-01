@@ -1,7 +1,7 @@
 use std::fs;
 
 fn read_lines() -> Vec<String>{
-  return fs::read_to_string("input/day1.csv").unwrap().lines().map(String::from).collect();
+  return fs::read_to_string("input/day1.txt").unwrap().lines().map(String::from).collect();
 }
 
 fn find_calibration_value(raw_line: String, digits_only: bool) -> i32 {
