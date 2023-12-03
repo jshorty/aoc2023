@@ -1,9 +1,5 @@
 use std::fs;
 
-// red 12 cubes
-// green 13 cubes
-// blue 14 cubes
-
 fn read_lines() -> Vec<String> {
   return fs::read_to_string("input/day2.txt").unwrap().lines().map(String::from).collect();
 }
