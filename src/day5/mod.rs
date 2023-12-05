@@ -1,9 +1,22 @@
 use std::fs;
+use std::ops::Range;
 
 fn parse_seeds(line: &str) -> Vec<i64> {
   let mut split = line.split(' ').collect::<Vec<&str>>();
   split.remove(0);
   return split.iter().map( |s| s.parse::<i64>().unwrap() ).collect();
+}
+
+fn parse_seed_ranges(line: &str) -> Vec<Range<i64>> {
+  let mut split = line.split(' ').collect::<Vec<&str>>();
+  split.remove(0);
+  let mut result = Vec::new();
+  while split.len() > 0 {
+    let range_start = split.remove(0).parse::<i64>().unwrap();
+    let range_len = split.remove(0).parse::<i64>().unwrap();
+    result.push(range_start..range_start + range_len);
+  }
+  return result;
 }
 
 fn parse_map(chunk: &str) -> Vec<((i64, i64), i64)> {
@@ -34,17 +47,10 @@ pub fn day5() {
   let input = fs::read_to_string("input/day5.txt").unwrap();
   let mut sections : Vec<&str> = input.split("\n\n").collect();
 
-  let seeds = parse_seeds(sections.remove(0));
+  let seeds = parse_seeds(sections.first().unwrap());
+  let seed_ranges = parse_seed_ranges(sections.remove(0));
 
   let maps = sections.iter().map( |s| parse_map(s) );
-
-  // let seed_to_soil = parse_map(sections[1]);
-  // let soil_to_fert = parse_map(sections[2]);
-  // let fert_to_water = parse_map(sections[3]);
-  // let water_to_lite = parse_map(sections[4]);
-  // let lite_to_temp = parse_map(sections[5]);
-  // let temp_to_humid = parse_map(sections[6]);
-  // let humid_to_loc = parse_map(sections[7]);
 
   let mut locations = Vec::new();
   for seed in seeds {
@@ -53,7 +59,7 @@ pub fn day5() {
     for map in maps.clone() {
       let old_val = val.clone();
       val = find_mapping(val, map);
-      println!("{}. mapped {} to {}", i, old_val, val);
+      //println!("{}. mapped {} to {}", i, old_val, val);
       i += 1;
     }
     locations.push(val);
@@ -66,5 +72,28 @@ pub fn day5() {
     }
   }
 
-  println!("Part 1: {}\nPart 2: {}", min_loc, 0);
+  let mut locations2 = Vec::new();
+  for seed_range in seed_ranges {
+    println!("NEXT SEED RANGE!");
+    for seed in seed_range {
+      let mut i = 1;
+      let mut val = seed.clone();
+      for map in maps.clone() {
+        let old_val = val.clone();
+        val = find_mapping(val, map);
+        //println!("{}. mapped {} to {}", i, old_val, val);
+        i += 1;
+      }
+      locations2.push(val);
+    }
+  }
+
+  let mut min_loc2 = locations2.remove(0);
+  for loc in locations2 {
+    if loc < min_loc {
+      min_loc2 = loc;
+    }
+  }
+
+  println!("Part 1: {}\nPart 2: {}", min_loc, min_loc2);
 }
