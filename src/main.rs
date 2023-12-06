@@ -3,8 +3,9 @@ pub mod day2;
 pub mod day3;
 pub mod day4;
 pub mod day5;
-use crate::day5::day5;
+pub mod day6;
+use crate::day6::day6;
 
 fn main() {
-    day5();
+    day6();
 }
