@@ -54,13 +54,11 @@ pub fn day5() {
 
   let mut locations = Vec::new();
   for seed in seeds {
-    let mut i = 1;
     let mut val = seed.clone();
     for map in maps.clone() {
-      let old_val = val.clone();
+      //let old_val = val.clone();
       val = find_mapping(val, map);
       //println!("{}. mapped {} to {}", i, old_val, val);
-      i += 1;
     }
     locations.push(val);
   }
@@ -76,13 +74,10 @@ pub fn day5() {
   for seed_range in seed_ranges {
     println!("NEXT SEED RANGE!");
     for seed in seed_range {
-      let mut i = 1;
       let mut val = seed.clone();
       for map in maps.clone() {
-        let old_val = val.clone();
         val = find_mapping(val, map);
         //println!("{}. mapped {} to {}", i, old_val, val);
-        i += 1;
       }
       locations2.push(val);
     }
