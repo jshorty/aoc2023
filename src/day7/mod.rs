@@ -4,15 +4,21 @@ use std::fs;
 // 7: 5oak, 6: 4oak, 5: fh, 4: 3oak, 3: 2p, 2: 1p, 1: hc
 fn parse_hand(hand: &str) -> i32 {
   let mut counts = HashMap::<char, i32>::new();
+  let mut jacks = 0;
   for card in hand.chars() {
-    if counts.get(&card).is_none() {
+    if card == 'J' {
+      jacks += 1;
+    } else if counts.get(&card).is_none() {
       counts.insert(card, 1);
     } else {
       counts.entry(card).and_modify(|c| *c += 1);
     }
   }
+  if jacks == 5 {
+    return 7;
+  }
   let distinct = counts.values().len();
-  let max = counts.values().max().unwrap();
+  let max = counts.values().max().unwrap() + jacks;
 
   match distinct {
     1 => return 7,
@@ -30,9 +36,9 @@ fn parse_tiebreaker(hand: &str) -> (i32, i32, i32, i32, i32) {
       'A' => result.push(14),
       'K' => result.push(13),
       'Q' => result.push(12),
-      'J' => result.push(11),
-      'T' => result.push(10),
-      _ => result.push(card.to_digit(10).unwrap() as i32)
+      'J' => result.push(2),
+      'T' => result.push(11),
+      _ => result.push(card.to_digit(10).unwrap() as i32 + 1)
     }
   }
   return (result[0], result[1], result[2], result[3], result[4]);
@@ -57,5 +63,5 @@ pub fn day7() {
     sum += hand.2 * i;
     i += 1;
   }
-  println!("Part 1: {}", sum);
+  println!("Part 2: {}", sum);
 }
